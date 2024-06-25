@@ -15,23 +15,48 @@
         // Поэтому мы должны миниум 2 раза пройтись по коллекции, т.к каждый элемент надо сначала посчитать,
         // а затем вернуть.
         // Решение проходит ровно 2 раза - ToList() и циклом.
+        // Однако из класса IEnumerable можно взять некоторые оптимизации (проверять что коллекция IList или IPartition)
+        // Что ускорит алгоритм до O(n) в некоторых случаях
 
-        List<T> values = enumerable.ToList();
+        // ИТОГО: сложность O(n) / O(2n), память O(n)
 
-        if (tailLength > values.Count || tailLength < 0)
-            throw new ArgumentException();
-
-        for (int i = 0; i < values.Count; ++i)
+        if (enumerable is IList<T> list)
         {
-            if (i < values.Count - tailLength)
+            if (tailLength > list.Count || tailLength < 0)
+                throw new ArgumentException();
+
+            for (int i = 0; i < list.Count; ++i)
             {
-                yield return (values[i], null);
-            }
-            else
-            {
-                yield return (values[i], values.Count - i - 1);
+                if (i < list.Count - tailLength)
+                {
+                    yield return (list[i], null);
+                }
+                else
+                {
+                    yield return (list[i], list.Count - i - 1);
+                }
             }
         }
+        else
+        {
+            List<T> values = enumerable.ToList();
+
+            if (tailLength > values.Count || tailLength < 0)
+                throw new ArgumentException();
+
+            for (int i = 0; i < values.Count; ++i)
+            {
+                if (i < values.Count - tailLength)
+                {
+                    yield return (values[i], null);
+                }
+                else
+                {
+                    yield return (values[i], values.Count - i - 1);
+                }
+            }
+        }
+        
     }
 }
 
@@ -42,5 +67,6 @@ class Program
         var result = new[] { 1, 2, 3, 4 }.EnumerateFromTail(2).ToList();
         result.ForEach(el => Console.WriteLine(el));
     }
+
 }
 

@@ -33,5 +33,11 @@ class Program
         //var pid = Environment.ProcessId;
         //Process.GetProcessById(pid).Kill();
 
+        // 6 способ. Сделать рекурсию, чтобы вызвался StackOverflowException, который не ловится try / catch
+        //int a = 5;
+        //FailProcess();
+
     }
+
+
 }

@@ -20,10 +20,10 @@ class Program
         }
 
         // Для решения переопределим оператор +, чтобы Number
-        // можно было бы складывать с числом 
+        // можно было бы складывать с числом, и не забудем про FormatProvider
         public static string operator +(Number number, string other)
         {
-            if (Int32.TryParse(other, out int otherInt))
+            if (int.TryParse(other, _ifp, out int otherInt))
             {
                 return (number._number + otherInt).ToString();
             }
